@@ -4,6 +4,28 @@ Batch download, rename, and optionally upload social media videos from any platf
 
 Works with **TikTok, Instagram Reels, YouTube Shorts, Twitter/X, Facebook, Reddit, Vimeo, Twitch**, and every other site supported by [yt-dlp](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md).
 
+## Architecture
+
+```mermaid
+flowchart TD
+    A["urls.txt / urls.csv"] --> B["Parse Input\nDetect Format"]
+    B --> C["Extract URLs"]
+    C --> D["yt-dlp Download\nBest Quality"]
+    D --> E{"Success?"}
+    E -->|"yes"| F["Extract Metadata\ncreator, platform, date"]
+    E -->|"no"| G["Log Error\nContinue Next"]
+    F --> H["Apply Naming Template"]
+    H --> I{"Drive Upload?"}
+    I -->|"--drive-folder"| J["Upload to\nGoogle Drive"]
+    I -->|"local only"| K["Save to\nOutput Directory"]
+    J --> L["Log Result"]
+    K --> L
+    G --> L
+    L --> M{"More URLs?"}
+    M -->|"yes"| D
+    M -->|"done"| N["Summary Report"]
+```
+
 ## Quick Start
 
 ```bash
